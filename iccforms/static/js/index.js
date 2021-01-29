@@ -27,7 +27,7 @@ function nameCb(){
 
 function phoneNumberCb(){
     $("#form-parent-div").append('<fieldset><legend>PhoneNumber</legend>' +
-        '<input type="number" value="1"></fieldset>')
+        '<input type="number" ></fieldset>')
 }
 
 function emailCb(){
