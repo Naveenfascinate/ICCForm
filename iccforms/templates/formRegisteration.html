@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<div>
+    <div id="form-register-div">
+    </div>
+</div>
+</body>
+<script>
+    registerColName = []
+    $.ajax({
+   url:"/register",
+   data: {'getdata': location.search.split("?")},
+   type: 'POST',
+
+   success: function (res, status) {
+      console.log(res.col)
+       registerColName=res.col
+       for(i=1;i<res.col.length;i++){
+           if(res.col[i] === "Name"){
+                $("#form-register-div").append('<fieldset><legend>Name</legend>' +
+                    '<input type="text" name="Username" id="Name"></fieldset>')
+            }
+            else if (res.col[i] === "PhoneNumber"){
+                $("#form-register-div").append('<fieldset><legend>PhoneNumber</legend>' +
+                    '<input type="number" name="phoneNumber" id="PhoneNumber"></fieldset>')
+            }
+            else if (res.col[i] === "Email"){
+                $("#form-register-div").append('<fieldset><legend>Email</legend>' +
+                    '<input type="email" name="email" id="Email"></fieldset>')
+            }
+            else if (res.col[i] === "Gender"){
+                 $("#form-register-div").append('<fieldset><legend>Gender</legend>' +
+                    '<input type="radio" id="male" name="Gender" value="male">' +
+                    '<label for="male">Male</label><br>' +
+                    '<input type="radio" id="male" name="Gender" value="male">' +
+                    '<label for="male">Female</label><br>' +
+                    '<input type="radio" id="male" name="Gender" value="male">' +
+                    '<label for="male">Other</label><br>' +
+                    '</fieldset>')
+            }
+            else if (res.col[i] === "Subject"){
+               $("#form-register-div").append('<fieldset><legend>Subject</legend>' +
+                '<input type="radio" id="male" name="Subject" value="male">' +
+                '<label for="male">Maths</label><br>' +
+                '<input type="radio" id="male" name="Subject" value="male">' +
+                '<label for="male">Computer</label><br>' +
+                '<input type="radio" id="male" name="Subject" value="male">' +
+                '<label for="male">Science</label><br>' +
+                '</fieldset>')
+            }
+       }
+        $("#form-register-div").append('<input type="submit" value="submit" onclick="registerSubmitCb()">')
+
+
+   },
+   error: function (res) {
+     alert(res.status);
+   }
+});
+function  registerSubmitCb(){
+    tabelData = []
+    tabelColName = []
+    for(i=1;i<registerColName.length;i++){
+        if(registerColName[i] === "Gender" || registerColName[i] === "Subject") {
+            temp = $('input[name='+registerColName[i]+']:checked').val();
+            tabelData.push(temp)
+            tabelColName.push(registerColName[i])
+        }
+        else{
+            temp = $('#'+registerColName[i]).val();
+            tabelData.push(temp)
+            tabelColName.push(registerColName[i])
+        }
+
+    }
+    tabelColName.push(location.search.split("?")[1])
+    console.log(tabelData)
+     $.ajax({
+   url:"/submit",
+   data: {'getdata': tabelData,'coldata':tabelColName},
+   type: 'POST',
+
+   success: function (res, status) {
+        document.getElementById("form-register-div").style.display="none";
+      $("body").append('<h>Submitted Response</h>')
+
+   },
+   error: function (res) {
+     alert(res.status);
+   }
+});
+
+
+}
+</script>
+</html>
