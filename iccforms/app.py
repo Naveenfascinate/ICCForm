@@ -1,83 +1,101 @@
 from flask import Flask, render_template, request
 import sqlite3
+import json
 
+# Setting Static files URL paths
 app = Flask(__name__,static_url_path='/static')
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+
+# HomePage
 @app.route('/')
 @app.route('/home')
 def homepage():
     return render_template('index.html')
 
+
+# Home page submit functionality
+@app.route("/homesubmit", methods=['POST', 'GET'])
+def homeSubmit():
+    # Getting data using POST method
+    if request.method == 'POST':
+        # Connecting sqlLite Database
+        con = sqlite3.connect('formdb.db')
+        cursor = con.cursor()
+
+        # Getting data from user
+        formData = request.get_json()
+        print(formData.keys())
+        formName = formData["formName"]
+
+        #formName = formData['formName']
+
+        # Inserting data to database
+        tabelcmd = 'INSERT INTO userforms (form_name,form_data) values ("' + formName + '","' \
+                   + str(formData) + '")'
+        cursor.execute(tabelcmd)
+        con.commit()
+
+        return "success"
+
+
 @app.route('/register',methods=['POST', 'GET'])
 def registerpage():
 
-
-
-    selectCmd = """SELECT * FROM """
-    #cursor.execute(selectCmd)
     if request.method == 'POST':
         columnNames = []
-        dictData = request.form.getlist("getdata[]")
-        print(dictData)
-        tabelName = dictData[1]
+        Data = request.form.getlist("getdata[]")
+        print(Data)
+        formName = Data[1]
         print("register")
         con = sqlite3.connect('formdb.db')
         cursor = con.cursor()
-        selectCmd = """PRAGMA table_info("""+tabelName+""") """
-        res = cursor.execute(selectCmd)
-        for i in res:
-            columnNames.append(i[1])
+        selectCmd = "SELECT form_data,response_data FROM userforms WHERE form_name = '"+formName+"'"
+        tabelData = cursor.execute(selectCmd)
+        print(tabelData)
+        for i in tabelData:
+            print(i[0])
+            jsonData = json.dumps(i[0])
+            jsonFormData = json.loads(jsonData)
+            print(type(jsonFormData))
 
 
 
 
-        return ({'col':columnNames})
+
+        return ({'formData':jsonFormData})
     return render_template('formRegisteration.html')
 
-@app.route("/confim", methods=['POST', 'GET'])
-def register():
-    if request.method == 'POST':
-        con = sqlite3.connect('formdb.db')
-        cursor = con.cursor()
-
-
-
-        res = request.form.getlist("getdata[]")
-
-        tabelcmd = """CREATE TABLE IF NOT EXISTS """+res[-1]+"""(user_id INTEGER PRIMARY KEY"""
-
-        for i in range(0,len(res)-1):
-            if(res[i] == "PhoneNumber"):
-                temp = ""","""+res[i] + """ INTEGER """
-            else:
-                temp = ""","""+res[i]+""" TEXT """
-            tabelcmd = tabelcmd+temp
-        tabelcmd = tabelcmd+""")"""
-        print(tabelcmd)
-        cursor.execute(tabelcmd)
-        return ("hello")
 
 @app.route("/submit", methods=['POST', 'GET'])
 def submit():
     if request.method == 'POST':
+        result ={}
         con = sqlite3.connect('formdb.db')
         cursor = con.cursor()
-        colValues = request.form.getlist("getdata[]")
-        colData = request.form.getlist("coldata[]")
-        tableCmd = """INSERT INTO """+colData[-1]+""" ("""+colData[0]
-        for i in range(1,len(colData)-1):
-            temp = ""","""+colData[i]
-            tableCmd = tableCmd+temp
-        tableCmd = tableCmd+""") VALUES('"""+colValues[0]+"""'"""
-        for j in range(1,len(colValues)):
-            if(colData[j] == "PhoneNumber"):
-                temp = """, """ + colValues[j]
-                tableCmd = tableCmd + temp
+        data = request.form.getlist("resultdata[]")
+        questions = request.form.getlist("question[]")
+        questionTypes = request.form.getlist("questionType[]")
+        formName = request.form.get("getdata")
+        print(formName)
+        selectCmd = "SELECT response_data FROM userforms WHERE form_name = '" + formName + "'"
+        tabelData = cursor.execute(selectCmd)
+        for i in tabelData:
+            print(i[0])
+            if i[0] == None:
+                for j in range(len(questions)):
+                    result[questions[j]]=[data[j]]
             else:
-                temp = """, '"""+colValues[j]+"""'"""
-                tableCmd = tableCmd + temp
-        tableCmd = tableCmd + """)"""
-        cursor.execute(tableCmd)
+                #temp = json.dumps(i[0])
+                result = i[0].replace("\'", "\"")
+                result = json.loads(result)
+                for j in range(len(questions)):
+                    result[questions[j]].append(data[j])
+                    pass
+
+        print(result)
+        tabelcmd = 'UPDATE userforms SET response_data = "'+str(result)+'" WHERE form_name = "'+formName+'"'
+        print(tabelcmd)
+        cursor.execute(tabelcmd)
         con.commit()
         return ("hello")
 

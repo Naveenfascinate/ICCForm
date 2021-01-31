@@ -3,22 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>iccForm</title>
-
+    <link rel="stylesheet" href="static/css/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
 
-<div id="container">
+<div id="container" style="margin: auto;width: 40%">
+<div id="parent-div">
+
+    <div style="padding-bottom:10px;">
+        <input  class="text-input" type="text" placeholder="Untitled form" id="formName"><br>
+    </div>
+    <div class="add-div">
+
+        <input  class="text-input1" type="text" placeholder="Your question" id="ques-id"><br>
+
+    <div id="add-choice-div0" class="add-choice-div-class">
+        <input  class="text-input1 add-choice-inputs" type="text" placeholder="ShortAnswer"><br>
+    </div>
+    <div>
+        <select onchange="addElementCb(this,0)" id="add-choice" class="add-select">
+            <option>ShortAnswer</option>
+            <option>Email</option>
+            <option>Radio</option>
+            <option>Checkbox</option>
+            <option>PhoneNumber</option>
+            <option>LongAnswer</option>
+        </select>
+    </div>
+
+    </div>
+    <div style="padding: 5px">
+        <button onclick="addDivCb()">add</button>
+        <button>delete</button>
+    </div>
+    </div>
+
+
+    <button onclick="submitcb()" style="margin-top: 10px">Submit</button>
+</div>
 
 
     </div>
 </body>
 <script src="../static/js/index.js"></script>
-<script src="../static/js/register.js"></script>
+
 <script>
 
-     $("#container").load("../static/templates/formCreation.html");
+    //     $("#container").load("../static/templates/formCreation.html");
 
 
 
