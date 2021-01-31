@@ -4,7 +4,8 @@ function addDivCb(){
     addChoiceDiv= addChoiceDiv +1;
     $("#parent-div").append(' <div class="add-div">\n' +
         '    \n' +
-        '        <input  class="text-input1" type="text" placeholder="Your question" id="ques-id"><br>\n' +
+        '        <input  class="text-input1" type="text" placeholder="Your question" id="ques-id">' +
+        '<input type="checkbox" title="Required" class="required" ><br>\n' +
         '       \n' +
         '    <div id="add-choice-div'+addChoiceDiv+'" class="add-choice-div-class">\n' +
         '        <input  class="text-input1 add-choice-inputs" type="text" placeholder="ShortAnswer"><br>\n' +
@@ -97,11 +98,13 @@ function checkboxAddCb(divNum){
 function submitcb(){
     questionDiv = $(".add-div");
     questionArray=[];
+    constrainsArray = [];
     inputsArray=[];
     result=[]
     for(i=0;i<questionDiv.length;i++){
         temp = questionDiv[i].children[0].value;
-        questionArray.push(temp)
+        temp1 = questionDiv[i].children[1].checked;
+        questionArray.push(temp+"-"+temp1)
 
     }
     choiceInputs = $(".add-choice-inputs");

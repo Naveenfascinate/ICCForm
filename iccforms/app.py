@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import sqlite3
 import json
+import ast
 
 # Setting Static files URL paths
 app = Flask(__name__,static_url_path='/static')
@@ -72,13 +73,16 @@ def submit():
         result ={}
         con = sqlite3.connect('formdb.db')
         cursor = con.cursor()
-        data = request.form.getlist("resultdata[]")
+
+        data = request.form.get("resultdata")
+        data = ast.literal_eval(data)
         questions = request.form.getlist("question[]")
         questionTypes = request.form.getlist("questionType[]")
         formName = request.form.get("getdata")
         print(formName)
         selectCmd = "SELECT response_data FROM userforms WHERE form_name = '" + formName + "'"
         tabelData = cursor.execute(selectCmd)
+        print(data)
         for i in tabelData:
             print(i[0])
             if i[0] == None:
@@ -89,15 +93,15 @@ def submit():
                 result = i[0].replace("\'", "\"")
                 result = json.loads(result)
                 for j in range(len(questions)):
+
                     result[questions[j]].append(data[j])
-                    pass
 
         print(result)
         tabelcmd = 'UPDATE userforms SET response_data = "'+str(result)+'" WHERE form_name = "'+formName+'"'
         print(tabelcmd)
         cursor.execute(tabelcmd)
         con.commit()
-        return ("hello")
+        return ("hi")
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
