@@ -4,18 +4,18 @@ import json
 import ast
 
 # Setting Static files URL paths
-app = Flask(__name__,static_url_path='/static')
-app.config["TEMPLATES_AUTO_RELOAD"] = True
+forms = Flask(__name__,static_url_path='/static')
+forms.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # HomePage
-@app.route('/')
-@app.route('/home')
+@forms.route('/')
+@forms.route('/home')
 def homepage():
     return render_template('index.html')
 
 
 # Home page submit functionality
-@app.route("/homesubmit", methods=['POST', 'GET'])
+@forms.route("/homesubmit", methods=['POST', 'GET'])
 def homeSubmit():
     # Getting data using POST method
     if request.method == 'POST':
@@ -39,9 +39,10 @@ def homeSubmit():
         return "success"
 
 
-@app.route('/register',methods=['POST', 'GET'])
+@forms.route('/register',methods=['POST', 'GET'])
 def registerpage():
 
+    global jsonFormData
     if request.method == 'POST':
         columnNames = []
         Data = request.form.getlist("getdata[]")
@@ -67,7 +68,7 @@ def registerpage():
     return render_template('formRegisteration.html')
 
 
-@app.route("/submit", methods=['POST', 'GET'])
+@forms.route("/submit", methods=['POST', 'GET'])
 def submit():
     if request.method == 'POST':
         result ={}
@@ -103,7 +104,33 @@ def submit():
         con.commit()
         return ("hi")
 
+@forms.route("/enquiries", methods=['POST', 'GET'])
+def enquiry():
+    if request.method == 'POST':
+        columnNames = []
+        Data = request.form.getlist("getdata[]")
+        print(Data)
+        formName = Data[1]
+        print("register")
+        con = sqlite3.connect('formdb.db')
+        cursor = con.cursor()
+        selectCmd = "SELECT response_data FROM userforms WHERE form_name = '"+formName+"'"
+        tabelData = cursor.execute(selectCmd)
+        print(tabelData)
+        for i in tabelData:
+            print(i[0])
+            jsonData = json.dumps(i[0])
+            jsonFormData = json.loads(jsonData)
+            print(type(jsonFormData))
+
+
+
+
+
+        return ({'formData':jsonFormData})
+    return render_template('enquiries.html')
+
 if __name__ == "__main__":
-    app.jinja_env.auto_reload = True
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(debug=True)
+    forms.jinja_env.auto_reload = True
+    forms.config['TEMPLATES_AUTO_RELOAD'] = True
+    forms.run(debug=True)

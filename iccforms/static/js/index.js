@@ -1,6 +1,7 @@
 colName = []
 addChoiceDiv=0
-function addDivCb(){
+function addDivCb(obj){
+    obj.disabled=true;
     addChoiceDiv= addChoiceDiv +1;
     $("#parent-div").append(' <div class="add-div">\n' +
         '    \n' +
@@ -22,9 +23,9 @@ function addDivCb(){
         '    </div>\n' +
         '\n' +
         '    </div>\n' +
-        ' <div style="padding: 5px">\n' +
-        '        <button onclick="addDivCb()">add</button>\n' +
-        '        <button>delete</button>\n' +
+        ' <div style="padding: 5px" class="add-del">\n' +
+        '        <button onclick="addDivCb(this)">add</button>\n' +
+        '        <button disabled>delete</button>\n' +
         '    </div>  ')
 
 }
@@ -95,6 +96,12 @@ function checkboxAddCb(divNum){
         '<input for="male" class="input-checkbox" type="text" value="option"><button ' +
         'onclick="checkboxAddCb('+divNum+')">+</button><br>')
 }
+function deleteCb(obj,index){
+    div = $(".add-div");
+    addDiv = $(".add-del");
+    div[index].remove();
+    addDiv[index].remove();
+}
 function submitcb(){
     questionDiv = $(".add-div");
     questionArray=[];
@@ -160,6 +167,7 @@ function submitcb(){
 
      document.getElementById("container").style.display="none";
       $("body").append('<div id="container"><h>127.0.0.1:5000/register?'+formName+'</h></div>')
+      $("body").append('<div id="container"><h>127.0.0.1:5000/enquiries?'+formName+'</h></div>')
 
    }
 });

@@ -6,6 +6,7 @@ $.ajax({
    type: 'POST',
 
    success: function (res, status) {
+      document.getElementById("form-label").innerText=location.search.split("?")[1];
       console.log(res)
        formData = res.formData.replaceAll('\'','"')
        formData = jQuery.parseJSON(formData);
@@ -16,7 +17,7 @@ $.ajax({
            questionMain = question[0];
            questionTemp = question[0].split("-")
            question = questionTemp[0];
-           if(questionTemp[1]){
+           if(questionTemp[1] === "true"){
               required = "  *";
            }
            else {
@@ -78,7 +79,7 @@ $.ajax({
        }
 
         $("#parent-div").append('<input type="submit" id="submit-id" value="submit"' +
-            'style="margin-top: 15px;width: 100px" onclick="registerSubmitCb()" >')
+            'style="margin-top: 15px;width: 100px"   onclick="registerSubmitCb()" >')
 
 
    },
@@ -135,13 +136,13 @@ function  registerSubmitCb(){
    type: 'POST',
 
    success: function (res, status) {
-        document.getElementById("form-register-div").style.display="none";
-      $("body").append('<h>Submitted Response</h>')
+        document.getElementById("container").style.display="none";
+      $("body").append('<h>Response Submitted</h>')
 
    },
    error: function (res) {
-      document.getElementById("form-register-div").style.display="none";
-      $("body").append('<h>Submitted Response</h>')
+      document.getElementById("container").style.display="none";
+      $("body").append('<h>Response Submitted</h>')
    }
 });
 
