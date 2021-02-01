@@ -9,3 +9,8 @@ python forms.py
 * flask
 * sqlite3
 * python 3
+
+# Pages
+* /home
+* /register?formName
+* /enquiries?formName
