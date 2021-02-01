@@ -5,10 +5,10 @@ This project is helpful to collecting datas from clients,students or employees.H
 ![alt text](/outputImages/formImg.png)
 
 # Register forms
-![alt text](/outputImages/formregister.png)
+![alt text](/outputImages/formregister.PNG)
 
 # Enquiries result
-![alt text](/outputImages/formenquiries.png)
+![alt text](/outputImages/formenquiries.PNG)
 
 # Run
 Run forms.py file in Terminal
