@@ -1,9 +1,8 @@
->Run
+Run
 Run forms.py file in Terminal
 python form.py
 
-
-#Requirements
+Requirements
 flask
 sqlite3
 python 3
