@@ -1,9 +1,9 @@
 # Run
 Run forms.py file in Terminal
 ## Command
-python form.py
+python forms.py
 
 # Requirements
-flask
-sqlite3
-python 3
+* flask
+* sqlite3
+* python 3
